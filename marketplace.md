@@ -1,4 +1,4 @@
-# trivy
+# trivy-contrib
 
 An Azure DevOps Pipelines Task for [Trivy](https://github.com/aquasecurity/trivy), with an integrated UI.
 
@@ -11,7 +11,7 @@ An Azure DevOps Pipelines Task for [Trivy](https://github.com/aquasecurity/trivy
 2. Add the task to your `azure-pipelines.yml` in a project where you'd like to run trivy:
 
 ```yaml
-- task: trivy@1
+- task: trivy-contrib@1
 ```
 
 ## Configuration

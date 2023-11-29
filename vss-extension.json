@@ -1,13 +1,13 @@
 {
     "manifestVersion": 1,
-    "id": "trivy-official",
-    "publisher": "AquaSecurityOfficial",
+    "id": "trivy-contrib",
+    "publisher": "georg-jung",
     "version": "VERSION_PLACEHOLDER",
-    "name": "trivy",
+    "name": "trivy-contrib",
     "description": "Trivy is the world’s most popular open source vulnerability and misconfiguration scanner. It is reliable, fast, extremely easy to use, and it works wherever you need it.",
     "repository": {
         "type": "git",
-        "uri": "https://github.com/aquasecurity/trivy-azure-pipelines-task"
+        "uri": "https://github.com/georg-jung/trivy-azure-pipelines-task"
     },
     "public": true,
     "categories": [
@@ -70,7 +70,7 @@
     },
     "links": {
         "home": {
-            "uri": "https://www.aquasec.com/"
+            "uri": "https://github.com/georg-jung/trivy-azure-pipelines-task"
         },
         "license": {
             "uri": "./LICENSE"
