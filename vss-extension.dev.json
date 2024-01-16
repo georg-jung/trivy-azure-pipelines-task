@@ -95,7 +95,7 @@
             "properties": {
                 "name": "Trivy",
                 "uri": "index.html",                
-                "supportsTasks": ["8f9cb13f-f551-439c-83e4-fac6801c3fab"]
+                "supportsTasks": ["49da02b3-b3d9-43aa-a3d1-b602500ef487"]
             }
         }
     ],
