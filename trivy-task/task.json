@@ -83,6 +83,14 @@
             "helpMarkDown": "Set this to 0 to prevent the build failing when Trivy detects issues."
         },
         {
+            "name": "scanners",
+            "type": "string",
+            "label": "Which scanners to use.",
+            "defaultValue": "vuln,misconfig,secret",
+            "required": false,
+            "helpMarkDown": "You might want to skip e.g. secret scanning in certain scenarios to reduce the scanning time."
+        },
+        {
             "name": "aquaKey",
             "type": "string",
             "label": "Aqua API Key",

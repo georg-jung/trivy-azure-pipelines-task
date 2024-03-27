@@ -19,6 +19,7 @@ async function run() {
     let ignoreUnfixed = task.getBoolInput("ignoreUnfixed", false)
     let severities = task.getInput("severities", false) ?? ""
     let options = task.getInput("options", false) ?? ""
+    let scanners = task.getInput("scanners", false) ?? "vuln,misconfig,secret"
 
     if (scanPath === undefined && image === undefined) {
         throw new Error("You must specify something to scan. Use either the 'image' or 'path' option.")
@@ -48,9 +49,9 @@ async function run() {
     }
 
     if (scanPath !== undefined) {
-        configureScan(runner, "fs", scanPath, outputPath, severities, ignoreUnfixed, options)
+        configureScan(runner, "fs", scanPath, outputPath, severities, ignoreUnfixed, options, scanners)
     } else if (image !== undefined) {
-        configureScan(runner, "image", image, outputPath, severities, ignoreUnfixed, options)
+        configureScan(runner, "image", image, outputPath, severities, ignoreUnfixed, options, scanners)
     }
 
     console.log("Running Trivy...")
@@ -134,7 +135,7 @@ async function createRunner(docker: boolean, loginDockerConfig: boolean): Promis
     return runner
 }
 
-function configureScan(runner: ToolRunner, type: string, target: string, outputPath: string, severities: string, ignoreUnfixed: boolean, options: string) {
+function configureScan(runner: ToolRunner, type: string, target: string, outputPath: string, severities: string, ignoreUnfixed: boolean, options: string, scanners: string) {
     console.log("Configuring options for image scan...")
     let exitCode = task.getInput("exitCode", false)
     if (exitCode === undefined) {
@@ -144,7 +145,7 @@ function configureScan(runner: ToolRunner, type: string, target: string, outputP
     runner.arg(["--exit-code", exitCode]);
     runner.arg(["--format", "json"]);
     runner.arg(["--output", outputPath]);
-    runner.arg(["--scanners", "vuln,misconfig,secret"])
+    runner.arg(["--scanners", scanners])
     if (severities.length) {
         runner.arg(["--severity", severities]);
     }
