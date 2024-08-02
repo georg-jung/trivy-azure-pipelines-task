@@ -43,7 +43,7 @@ async function run() {
         process.env.AQUA_ASSURANCE_EXPORT = assurancePath
     }
 
-    const runner = await createRunner(task.getBoolInput("docker", false), loginDockerConfig);
+    const runner = await createRunner(task.getBoolInput("docker", false), loginDockerConfig, false);
 
     if (task.getBoolInput("debug", false)) {
         runner.arg("--debug")
@@ -78,7 +78,7 @@ async function run() {
     if (additionalCommandsWithResult.length) {
         const commands = additionalCommandsWithResult.split(/\r?\n/);
         for (const additionalCmd of commands) {
-            const additionalRunner = await createRunner(task.getBoolInput("docker", false), loginDockerConfig);
+            const additionalRunner = await createRunner(task.getBoolInput("docker", false), loginDockerConfig, true);
             additionalRunner.line(additionalCmd)
             additionalRunner.line(outputPath)
             additionalRunner.execSync();
@@ -110,7 +110,7 @@ function getAquaAccount(): aquaCredentials {
     }
 }
 
-async function createRunner(docker: boolean, loginDockerConfig: boolean): Promise<ToolRunner> {
+async function createRunner(docker: boolean, loginDockerConfig: boolean, mountArtifactStagingDirectory: boolean): Promise<ToolRunner> {
     const version: string | undefined = task.getInput('version', true);
     if (version === undefined) {
         throw new Error("version is not defined")
@@ -126,6 +126,7 @@ async function createRunner(docker: boolean, loginDockerConfig: boolean): Promis
     const runner = task.tool("docker");
     const home = require('os').homedir();
     const cwd = process.cwd()
+    const artifactStagingDirectory = task.getVariable("Build.ArtifactStagingDirectory");
 
     runner.line("run --rm")
     loginDockerConfig ? runner.line("-v " + task.getVariable("DOCKER_CONFIG") + ":/root/.docker") :  runner.line("-v " + home + "/.docker:/root/.docker")
@@ -133,6 +134,9 @@ async function createRunner(docker: boolean, loginDockerConfig: boolean): Promis
     runner.line("-v /tmp/trivy-cache/:/root/.cache/")
     runner.line("-v /var/run/docker.sock:/var/run/docker.sock")
     runner.line("-v " + cwd + ":/src")
+    if (mountArtifactStagingDirectory) {
+        runner.line("-v " + artifactStagingDirectory + ":" + artifactStagingDirectory)
+    }
     runner.line("--workdir /src")
     if(hasAquaAccount()) {
         runner.line("-e TRIVY_RUN_AS_PLUGIN")
