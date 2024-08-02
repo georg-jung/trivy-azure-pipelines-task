@@ -20,6 +20,7 @@ async function run() {
     let severities = task.getInput("severities", false) ?? ""
     let options = task.getInput("options", false) ?? ""
     let scanners = task.getInput("scanners", false) ?? "vuln,misconfig,secret"
+    let additionalCommandsWithResult = task.getInput("additionalCommandsWithResult", false) ?? ""
 
     if (scanPath === undefined && image === undefined) {
         throw new Error("You must specify something to scan. Use either the 'image' or 'path' option.")
@@ -47,6 +48,9 @@ async function run() {
     if (task.getBoolInput("debug", false)) {
         runner.arg("--debug")
     }
+    if (additionalCommandsWithResult.length) {
+        runner.arg("--list-all-pkgs")
+    }
 
     if (scanPath !== undefined) {
         configureScan(runner, "fs", scanPath, outputPath, severities, ignoreUnfixed, options, scanners)
@@ -69,6 +73,15 @@ async function run() {
 
     console.log("Publishing JSON results...")
     task.addAttachment("JSON_RESULT", "trivy" +  Math.random() + ".json", outputPath)
+
+    if (additionalCommandsWithResult.length) {
+        for (const additionalCmd in additionalCommandsWithResult.split(/\r?\n/)) {
+            const additionalRunner = await createRunner(task.getBoolInput("docker", false), loginDockerConfig);
+            additionalRunner.line(additionalCmd)
+            additionalRunner.line(outputPath)
+            additionalRunner.execSync();
+        }
+    }
     console.log("Done!");
 }
 

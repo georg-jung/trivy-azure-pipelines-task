@@ -121,6 +121,14 @@
             "defaultValue": "",
             "required": false,
             "helpMarkDown": "Additional flags to pass to Trivy command line."
+        },
+        {
+            "name": "additionalCommandsWithResult",
+            "type": "multiLine",
+            "label": "Additional cmds with result.json",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "trivy commands, one per line, with the path to the result.json file appended. E.g. \"convert --format cyclonedx --output result.cdx\""
         }
     ],
     "execution": {
