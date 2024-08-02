@@ -48,14 +48,15 @@ async function run() {
     if (task.getBoolInput("debug", false)) {
         runner.arg("--debug")
     }
-    if (additionalCommandsWithResult.length) {
-        runner.arg("--list-all-pkgs")
-    }
-
+    
     if (scanPath !== undefined) {
         configureScan(runner, "fs", scanPath, outputPath, severities, ignoreUnfixed, options, scanners)
     } else if (image !== undefined) {
         configureScan(runner, "image", image, outputPath, severities, ignoreUnfixed, options, scanners)
+    }
+
+    if (additionalCommandsWithResult.length) {
+        runner.arg("--list-all-pkgs")
     }
 
     console.log("Running Trivy...")
