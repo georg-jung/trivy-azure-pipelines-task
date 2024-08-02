@@ -76,7 +76,8 @@ async function run() {
     task.addAttachment("JSON_RESULT", "trivy" +  Math.random() + ".json", outputPath)
 
     if (additionalCommandsWithResult.length) {
-        for (const additionalCmd in additionalCommandsWithResult.split(/\r?\n/)) {
+        const commands = additionalCommandsWithResult.split(/\r?\n/);
+        for (const additionalCmd of commands) {
             const additionalRunner = await createRunner(task.getBoolInput("docker", false), loginDockerConfig);
             additionalRunner.line(additionalCmd)
             additionalRunner.line(outputPath)
