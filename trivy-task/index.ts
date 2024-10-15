@@ -74,6 +74,7 @@ async function run() {
 
     console.log("Publishing JSON results...")
     task.addAttachment("JSON_RESULT", "trivy" +  Math.random() + ".json", outputPath)
+    task.setVariable("TrivyJsonResultPath", outputPath);
 
     if (additionalCommandsWithResult.length) {
         const commands = additionalCommandsWithResult.split(/\r?\n/);
