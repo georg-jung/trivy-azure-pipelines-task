@@ -44,6 +44,7 @@ async function run() {
         process.env.AQUA_ASSURANCE_EXPORT = assurancePath
     }
 
+    await downloadVulnDb(loginDockerConfig); // The requests to ghcr.io are rate-limited and might fail sometimes on public runners, so we apply a retrying logic here.
     const runner = await createRunner(task.getBoolInput("docker", false), loginDockerConfig, configuredJsonOutputPath !== undefined);
 
     if (task.getBoolInput("debug", false)) {
@@ -87,6 +88,34 @@ async function run() {
         }
     }
     console.log("Done!");
+}
+
+async function downloadVulnDb(loginDockerConfig: boolean) {
+    const maxAttempts = 5;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+            const rnr = await createRunner(task.getBoolInput("docker", false), loginDockerConfig, false);
+            rnr.arg("image");
+            rnr.arg("--download-db-only");
+            const result = rnr.execSync();
+
+            if (result.code === 0) {
+                console.log("Vulnerability database download successful.");
+                break;
+            } else {
+                throw new Error('Download failed, exit code ' + result.code);
+            }
+        } catch (error) {
+            if (attempt < maxAttempts) {
+                console.log(`Attempt ${attempt} failed. Retrying in 1 second...`);
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            } else {
+                console.error(`Failed after ${attempt} attempts:`, error);
+                throw error; // Re-throw error after the last attempt
+            }
+        }
+    }
 }
 
 function isDevMode(): boolean {
