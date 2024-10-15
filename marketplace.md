@@ -47,6 +47,7 @@ You can supply several inputs to customise the task.
 | `aquaSecret` | The Aqua API Secret to use to link scan results to your Aqua Security account _(not required)_.                                      |
 | `options`    | Additional flags to pass to trivy. Example: `--timeout 10m0s` _(not required)_.                                                      |
 | `additionalCommandsWithResult` | Additional trivy commands to execute, one per line, with the path to the result.json file appended. E.g. `convert --format cyclonedx --output result.cdx` |
+| `jsonOutputPath` | A path to a file where trivy saves it's output. Defaults to a random temporary path. Can be overriden e.g. to upload the output as an artifact. E.g. `$(Build.ArtifactStagingDirectory)/trivy-code-scan-results.json` |
 
 ### Example of scanning multiple targets
 

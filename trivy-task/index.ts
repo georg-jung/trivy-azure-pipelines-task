@@ -8,9 +8,10 @@ const latestTrivyVersion = "v0.56.2"
 const tmpPath = "/tmp/"
 
 async function run() {
+    let configuredJsonOutputPath = task.getInput("jsonOutputPath", false)
 
-    console.log("Preparing output location...")
-    const outputPath = tmpPath + "trivy-results-" + Math.random() + ".json";
+    const outputPath = configuredJsonOutputPath ?? (tmpPath + "trivy-results-" + Math.random() + ".json");
+    console.log("Preparing output location " + outputPath + "...")
     task.rmRF(outputPath);
 
     let scanPath = task.getInput("path", false)
@@ -43,7 +44,7 @@ async function run() {
         process.env.AQUA_ASSURANCE_EXPORT = assurancePath
     }
 
-    const runner = await createRunner(task.getBoolInput("docker", false), loginDockerConfig, false);
+    const runner = await createRunner(task.getBoolInput("docker", false), loginDockerConfig, configuredJsonOutputPath !== undefined);
 
     if (task.getBoolInput("debug", false)) {
         runner.arg("--debug")
